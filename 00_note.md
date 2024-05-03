@@ -1,0 +1,1 @@
+# npm init: will initialize node package manager file named package.json
