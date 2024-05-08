@@ -16,6 +16,15 @@ import connectDB from "./db/index.js";
 
 // connecting and exporting 2nd approach of DB
 connectDB() 
+.then(()=>{
+    //we will use app and listen in app ; so that our server can start
+    app.listen(process.env.PORT || 8000, ()=>{
+        console.log`Server is runnig at port : ${process.env.PORT}`
+    }) // default PORT is 8000
+})
+.catch((err) => {
+    console.log("MONGO db connection failed !!! ",err);
+})
 
 
 

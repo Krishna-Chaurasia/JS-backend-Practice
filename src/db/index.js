@@ -2,6 +2,8 @@
  import mongoose from "mongoose";
  import { DB_NAME } from "../constants.js";
 
+// in below function we use async method function, so after completing async method we need to retunr a prommise.
+// and this promise is returned in src >> index.js >> connectDB().then(give succes message).catch(handle error)
 
  const connectDB = async () => {
     try {
@@ -10,7 +12,7 @@
     
         console.log(`\n MongoDB connected !! DB HOST : ${connectionINstance.connection.host}`)
     }
-
+   
     catch(error){
         console.log("MONGODB connection failed", error);
          
