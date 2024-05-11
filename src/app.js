@@ -45,11 +45,25 @@ app.use(express.static("public"))
 app.use(cookieParser())
 
 
+//routes import 
+import userRouter from './routes/user.routes.js'
+
+//router declaration
+
+// before importing we were using app.get() becauing previously using app we were writing routes and controller here itself
+// but now since we have separated contrller and routes so we need to bring them back using middleware
+// hence apply app.use()  instead of app.get()
+// and now in app.use("here can provide all routes",which router to activate)
 
 
+//app.use("/users",userRouter) // it will go to user router file
+// Url will be like : http://localhost:8000/users/register
 
+// instad of using app.use("/users",userRouter) ;; we will use /api isntaed of /users
+app.use("/api/v1/users",userRouter) //v1 is version of api which is 1 here
+// if someone comes on "/api/v1/users" it will pass to userRouter
 
-
+// now url will be:: http://localhost:8000/api/v1/users/register
 
 
 

@@ -10,14 +10,14 @@ class ApiError extends Error {
         statusCode,
         message = "Something went wrong", 
         errors = [],
-        statck = ""
+        stack = ""
     ){ 
         //we overwrite things in constructor in { use call super(message) }
         super(message)
         this.statusCode = statusCode
         this.message = message
         this.error = error
-        this.statck = statck
+        this.stack = statck
         this.data = null // removing data field
         this.success = false;
         this.errors = errors

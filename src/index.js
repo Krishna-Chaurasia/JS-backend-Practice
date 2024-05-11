@@ -11,7 +11,7 @@ dotenv.config({
 import mongoose, { connect } from "mongoose"; //mongoose helps to connect with database 
 import { DB_NAME } from "./constants.js"; // importing DB_NAME from constants.js file
 import connectDB from "./db/index.js";
-
+import {app} from "./app.js"
 
 
 // connecting and exporting 2nd approach of DB

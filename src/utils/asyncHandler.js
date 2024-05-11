@@ -1,7 +1,7 @@
 // we will use promises/try-catch for asyncHander 
 
 const asyncHandler  = (requestHandler) => {
-    (req, res, next) =>{
+   return (req, res, next) =>{ // we need to return the it as a function because we are accepting it as function
         //Promise.resolve().reject() or Promise.resolve().catch)=()
 
         Promise.resolve(requestHandler(req,res,next)).catch((err) => next(err))
