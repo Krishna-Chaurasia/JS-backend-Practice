@@ -9,7 +9,7 @@ const storage = multer.diskStorage(
                                        // so, along with request if any file comes then multer will handle it
                                        // and cb is callback function as a argument in destination function 
     {
-        cb(null,"./pullic/temp") // ./ means same directory
+        cb(null,"./public/temp") // ./ means same directory
     },
     //passing 2nd object where filename is key and function is its value
     filename: function (req, file, cb) {

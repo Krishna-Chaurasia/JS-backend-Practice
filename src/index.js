@@ -4,7 +4,7 @@
 //or
 import dotenv from "dotenv"
 dotenv.config({
-    path: './env'
+    path: './.env'
 })  // now got to package.json >> in script >> in dev's value add : '-r dotenv/config --experimental-json-modules' in b/w nodemon and src/index.js
 
 

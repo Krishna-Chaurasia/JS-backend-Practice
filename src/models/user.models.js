@@ -73,7 +73,7 @@ if(!this.isModified("password"))//modified == true,gets converted in false,so if
     return next();
 
     //here bcrypt will hash the password i.e bcrypt.hash(whom to be hashe, how many rounds to hash)
-    this.password = bcrypt.hash(this.password,10)
+    this.password = await bcrypt.hash(this.password,10)//use await (until this task is not finished)because it takes time 
     
     // after hashing the password; now go for the next()
     // if we will just send like next(); then if user changes any of its field(e.g avatar)

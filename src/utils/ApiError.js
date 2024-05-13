@@ -1,6 +1,6 @@
 // create a class ApiError which extends Error class
 class ApiError extends Error {
-    // In this class Erros constructor are avialble
+    // In this class Error constructor are avialble
     // but we are declaring our own constructor
     
     //overwriting the below constructor properties 
@@ -16,8 +16,7 @@ class ApiError extends Error {
         super(message)
         this.statusCode = statusCode
         this.message = message
-        this.error = error
-        this.stack = statck
+        this.stack = stack
         this.data = null // removing data field
         this.success = false;
         this.errors = errors
