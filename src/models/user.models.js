@@ -72,7 +72,7 @@ userSchema.pre("save", async function (next){
 if(!this.isModified("password"))//modified == true,gets converted in false,so if()'s next() didn't executes,it goes below
     return next();
 
-    //here bcrypt will hash the password i.e bcrypt.hash(whom to be hashe, how many rounds to hash)
+    //here bcrypt will hash the password i.e bcrypt.hash(whom to be hash, how many rounds to hash)
     this.password = await bcrypt.hash(this.password,10)//use await (until this task is not finished)because it takes time 
     
     // after hashing the password; now go for the next()
@@ -93,11 +93,11 @@ userSchema.methods.isPasswordCorrect = async function(password){
   return await bcrypt.compare(password,this.password) // it returns true or false
 }
 
-// below method will generate AccessToken
+// below method will generate AccessToken for the user
 // When access token is generated then it returns, this method does not take time
 userSchema.methods.generateAccessToken = function(){
     //jwt's sign({}) method will generate token  
- return   jwt.sign(
+ return jwt.sign(
         //providing payload
         {
         //below provided info. will be kept by jwt
@@ -108,6 +108,7 @@ userSchema.methods.generateAccessToken = function(){
         fullName: this.fullName
     },
     //providing access token
+    // process.env.ACCESS_TOKEN_SECRET,
     process.env.ACCESS_TOKEN_SECRET,
     //below expiry
     {
@@ -118,9 +119,9 @@ userSchema.methods.generateAccessToken = function(){
 )
 }
 
-// below method will generate refreshToken
+// below method will generate refreshToken for the user
 // in exact same way refresh token is generated just like access token only few changes required
-userSchema.methods.generateAccessToken = function(){
+userSchema.methods.generateRefreshToken = function(){
     return   jwt.sign(
         //providing payload
         {
@@ -144,4 +145,3 @@ userSchema.methods.generateAccessToken = function(){
 
 
 export const User = mongoose.model("User", userSchema)
-
