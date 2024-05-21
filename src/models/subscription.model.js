@@ -10,7 +10,7 @@
         ref: "User"
     }
     
- },{timestamps:true})
+ },{timestamps:true}) 
 
 
 
