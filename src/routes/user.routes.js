@@ -1,5 +1,10 @@
 import { Router } from "express" // Router comes from express
-import { registerUser,loginUser,logoutUser,refreshAccessToken } from "../controllers/user.controller.js"
+
+import {
+     registerUser,loginUser,logoutUser,refreshAccessToken, changeCurrentPassword, getcurrentUser,
+     updateAccountDetails, updateUserAvatar, updateUserCoverImage, getUserChannelProfile, getWatchHistory
+     } from "../controllers/user.controller.js"
+
 import {upload} from "../middlewares/multer.middleware.js" //new added for file handling
 import { verifyJWT } from "../middlewares/auth.middleware.js"
 
@@ -42,6 +47,22 @@ router.route("/login").post(loginUser)
 router.route("/logout").post(verifyJWT, logoutUser) //but before logoutUser method, it will execute the middleware name verifyJWT
 
 router.route("/refresh-token").post(refreshAccessToken)
+
+router.route("/change-password").post(verifyJWT,changeCurrentPassword)
+
+router.route("/current-user").get(verifyJWT,getcurrentUser)
+
+router.route("/update-account").patch(verifyJWT,updateAccountDetails)//patach will update specific details 
+
+router.route("/avatar").patch(verifyJWT,upload.single("avatar"), updateUserAvatar)
+
+router.route("/cover-Image").patch(verifyJWT,upload.single("/coverImage"), updateUserCoverImage)
+
+router.route("/c/:username").get(verifyJWT,getUserChannelProfile) //"/c/:username" : is used due to data is coming from params 
+
+router.route("/history").get(verifyJWT,getWatchHistory)
+
+
 
 export default router // using default we can give any random name while importing 
 //e.g import userRouter from "./routes/user.routes.js" in app.js file
