@@ -423,7 +423,7 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
 const getcurrentUser = asyncHandler(async (req, res) => {
     return res
     .status(200)
-    .json(200,req.user, "current usr fetched successfully")
+    .json(new ApiResponse(200,req.user, "current usr fetched successfully"))
 })
 
 const updateAccountDetails = asyncHandler(async (req, res) => {
@@ -514,6 +514,148 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
      
 })
 
+const getUserChannelProfile = asyncHandler(async (req,res)=>{
+    const {username} = req.params // getting url of the user from params not from its body
+                                  // also extracting the username from params
+    //checking if username exist or not 
+    if(!username?.trim()){ //if username present then trim it
+        throw ApiError (400, "username is missing")
+    }
+
+    //User.find({username})
+
+    // now using aggregate pipelines which accepts array & in side array there are many pipelines in form of {},{},{}
+    // since User model is database(also we have applied aggregate method),, use await
+    // after applying aggregate the values which returns from it is in the form of array which is stored in channel var. 
+    const channel = await User.aggregate([
+            {
+            $match: { //match: this field matches 
+            username:username?.toLowerCase()//username:username;username will be matched by username although it's varified above  
+            // here we have filterd our one document/username 
+            // now on the basis of this doc/username >> we will use loolup
+        }
+        },
+        {
+            $lookup:{
+            //Now finding subscriber of this username
+            from:"subscriptions", //from is used to see from where to look i.e give model name(Subscription) & it 
+                                 // converts in lowercase along with plural form hence model is subscriptions
+
+            localField:"_id", //localField: it is the name of local field of User model
+            foreignField:"channel",//foreignField: from which other model(subscriptions) the field name will come i.e channel field
+                             // will give no. of subscribers
+            as:"subscribers" // as : it is name of the field which will store information 
+        }
+        },
+        {
+            //Now finding no. of channel he have subscribed
+            $lookup:{
+                from: "subscriptions",
+                localField:"_id",
+                foreignField:"subscriber",
+                as:"subscribedTo"
+            }
+        },
+        {   // adding both pipelines i.e both lookup
+            $addFields:{
+                subscribersCount:{
+                    $size:"$subscribers" // $size : it counts the fiels ;; $subscribers : use doller as it is field now
+                },
+                channelsSubscribedToCount:{
+                    $size: "$subscribedTo"
+                },
+                isSubscribed:{
+                    $cond:{ // $cond is condition
+                       if: {$in: [req.user?._id, "$subscribers.subscriber"]}, // in checks if present or not  
+                        then:true,
+                        else:false
+                    }
+                }
+            }
+        },
+        {
+            //final pipelines : 
+            $project:{  //$project : it will not show all values, it shows specific things 
+                fullName:1,
+                username:1,
+                subscribersCount:1,
+                channelsSubscribedToCount:1,
+                isSubscribed:1,
+                avatar:1,
+                coverImage:1,
+                email:1
+            }     
+        }
+    ])
+    if(!channel?.length){
+        throw new ApiError(404, "channel does not exist")
+    }
+    console.log(channel)
+    console.log(channel.length)
+
+    return res
+            .status(200)
+            .json(
+                new ApiResponse(200, channel[0],"user channel feteched successfully")
+            )
+})    
+
+const getWatchHistory = asyncHandler(async (res,res)=>{
+    const user = await User.aggregate([
+        {
+            match:{
+                _id: new mongoose.Types.ObjectId(req.user._id)//creating mongoose objectId
+            }
+        },
+        {
+            $lookup:{
+                from :"videos", //name of other model 
+                localField:"watchHistory",
+                foreignField:"_id", //name of videos's model's field
+                as: "watchHistory",
+                //to add multiple pipelines
+                pipeline:[
+                    {
+                        $lookup:{
+                            from:"users",
+                            localField:"owner",
+                            foreignField:"_id",
+                            as:"owner",
+                            pipeline:[
+                                {
+                                    $project:{
+                                        fullName:1,
+                                        username:1,
+                                        avatar:1
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    //adding one more pipeline
+                    {
+                        $addFields:{
+                            owner: { // existing field will overwrite
+                                // extracting 1st value from this array
+                                $first:"$owner"
+
+                            }
+                        }
+                    }
+                ]
+
+
+            }
+        }
+    ])
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200,user[0].getWatchHistory,"Watched history fetched successfully")
+    )
+})
+
  export {registerUser,
     loginUser,
     logoutUser,
@@ -522,7 +664,9 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
     getcurrentUser,
     updateAccountDetails,
     updateUserAvatar,
-    updateUserCoverImage
+    updateUserCoverImage,
+    getUserChannelProfile,
+    getWatchHistory
  }
 
- 
+   
