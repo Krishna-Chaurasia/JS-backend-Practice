@@ -65,4 +65,4 @@ router.route("/history").get(verifyJWT,getWatchHistory)
 
 
 export default router // using default we can give any random name while importing 
-//e.g import userRouter from "./routes/user.routes.js" in app.js file
+//e.g import userRouter from "./routes/user.routes.js" in app.js file.36

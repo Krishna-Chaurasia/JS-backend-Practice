@@ -276,8 +276,8 @@ const logoutUser = asyncHandler(async (req, res) => {
             {
                 // now updating in mongodb
                 // we can update using $set
-                $set: {
-                    refreshToken: undefined
+                $unset: {
+                    refreshToken: 1 // this removes the field from document
                 }
             },
             {
@@ -600,7 +600,7 @@ const getUserChannelProfile = asyncHandler(async (req,res)=>{
             )
 })    
 
-const getWatchHistory = asyncHandler(async (res,res)=>{
+const getWatchHistory = asyncHandler(async (req,res)=>{
     const user = await User.aggregate([
         {
             match:{
